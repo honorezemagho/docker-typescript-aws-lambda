@@ -2,7 +2,7 @@
 FROM public.ecr.aws/lambda/nodejs:18 as builder
 
 # Set working directory
-WORKDIR /var/task
+WORKDIR ${LAMBDA_TASK_ROOT}
 
 # Install dependencies
 COPY package*.json ./
@@ -18,8 +18,8 @@ RUN npm run build
 FROM public.ecr.aws/lambda/nodejs:18
 
 # Copy built files from builder
-COPY --from=builder /var/task/package*.json ./
-COPY --from=builder /var/task/dist/ ./
+COPY --from=builder ${LAMBDA_TASK_ROOT}/package*.json ./
+COPY --from=builder ${LAMBDA_TASK_ROOT}/dist/ ./
 
 # Install production dependencies only
 RUN npm install --only=production
